@@ -1,0 +1,57 @@
+Contract PaymentLink () {
+    // 1️⃣ Mappings (first in the contract)
+    mapping[U256, Address] paymentMerchants // paymentId -> Merchant's Address
+    mapping[U256, U256] paymentAmounts // paymentId -> Payment Amount
+
+    // 2️⃣ Events
+    event PaymentCompleted(paymentId: U256, payer: Address, amount: U256)
+
+    // 3️⃣ Enum for error handling
+    enum ErrorCodes {
+        PaymentAlreadyExists = 1
+        InvalidPayment
+        IncorrectAmount
+    }
+
+    // 4️⃣ Functions
+
+    @using(checkExternalCaller = false) // Allow internal calls
+    pub fn createPayment(paymentId: U256, amount: U256) -> () {
+        let sender = callerAddress!() // Get the caller's address
+
+        // Ensure the payment does not already exist
+        assert!(callerContractId!() == false, ErrorCodes.PaymentAlreadyExists)
+
+        // Store the payment details
+        paymentMerchants[paymentId] = sender
+        paymentAmounts[paymentId] = amount
+    }
+
+    @using(preapprovedAssets = true)
+    pub fn pay(paymentId: U256) -> () {
+        checkCaller!() // Ensure it's called externally
+
+        let sender = callerAddress!() // Get the caller's address
+        let amount = callValue!() // Get the amount sent
+
+        // Ensure the payment exists
+        assert!(callerContractId!(), ErrorCodes.InvalidPayment)
+
+        // Retrieve merchant address and required amount
+        let merchant = paymentMerchants[paymentId]
+        let requiredAmount = paymentAmounts[paymentId]
+
+        // Ensure the amount matches the expected value
+        assert!(amount == requiredAmount, ErrorCodes.IncorrectAmount)
+
+        // Transfer ALPH tokens to the merchant
+        transferTokenToAddress!(merchant, ALPH, requiredAmount)
+
+        // Remove payment details
+        paymentMerchants.remove(paymentId)
+        paymentAmounts.remove(paymentId)
+
+        // Emit event to notify of the payment
+        emit PaymentCompleted(paymentId, sender, amount)
+    }
+}
