@@ -1,0 +1,165 @@
+/* Base container */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #0a1a2b;
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+    padding: 30px;
+}
+
+/* Main content container */
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 600px;
+    width: 100%;
+    background: rgba(10, 26, 43, 0.9);
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(15px);
+    margin-top: 20px;
+}
+
+/* Heading styles */
+.header {
+    font-size: 2.2rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #00bcd4;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+/* Connect button styles */
+.connectButton {
+    background: #00bcd4;
+    color: #fff;
+    padding: 14px 28px;
+    font-size: 18px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 2rem;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.connectButton:hover {
+    background: #0194a1;
+    transform: translateY(-2px);
+}
+
+.connectButton:active {
+    transform: translateY(0);
+}
+
+/* Payment details styles */
+.paymentDetails {
+    text-align: center;
+    width: 100%;
+    padding: 20px;
+    background: rgba(10, 26, 43, 0.95);
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Wallet address container */
+.walletAddressContainer {
+    width: 100%;
+    /* Ensure it takes full width */
+    max-width: 100%;
+    /* Prevent overflow */
+    padding: 20px;
+    /* Increased padding for more space */
+    border-radius: 10px;
+    background-color: #1d2a3a;
+    /* Darker background for better contrast */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
+    margin: 10px 0;
+    /* Space around the container */
+    word-wrap: break-word;
+    /* Ensure the address wraps correctly */
+}
+
+/* Wallet address style */
+.walletAddress {
+    font-size: 1.6rem;
+    /* Larger font size */
+    margin: 0;
+    color: #d0d0d0;
+    /* Light gray for the address */
+    word-wrap: break-word;
+    /* Prevent overflow */
+    white-space: normal;
+    /* Allow wrapping */
+    text-align: center;
+    /* Center align */
+    overflow-wrap: break-word;
+    /* Break long words */
+    word-break: break-word;
+    /* Break long words on smaller screens */
+}
+
+/* Payment info style */
+.paymentInfo {
+    font-size: 1.4rem;
+    margin: 10px 0;
+    color: #fff;
+}
+
+/* Payment button styles */
+.paymentButton {
+    display: inline-block;
+    padding: 14px 30px;
+    background: linear-gradient(45deg, #00bcd4, #00a6b2);
+    color: #fff;
+    font-size: 1.2rem;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease-in-out, background-color 0.3s ease;
+}
+
+.paymentButton:hover {
+    background-color: #0194a1;
+    transform: scale(1.05);
+}
+
+.paymentButton:active {
+    transform: scale(1);
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .main {
+        padding: 20px;
+    }
+
+    .header {
+        font-size: 1.8rem;
+    }
+
+    .paymentButton {
+        font-size: 1rem;
+        padding: 12px 28px;
+    }
+
+    .walletAddress {
+        font-size: 1.4rem;
+        /* Slightly smaller for smaller screens */
+    }
+
+    .walletAddressContainer {
+        padding: 15px;
+        /* Less padding on smaller screens */
+    }
+}

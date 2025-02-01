@@ -1,16 +1,16 @@
-// Home.tsx
-import styles from '../styles/Home.module.css'
-import { TokenDapp } from './TokenDapp'
+import { useEffect, useState } from 'react'
 import { AlephiumConnectButton, useWallet } from '@alephium/web3-react'
-import { useState, useEffect } from 'react'
-import { tokenFaucetConfig } from '../services/utils'
 import { getAddressBalance } from '../services/alephiumService'
+import { tokenFaucetConfig } from '../services/utils'
+import styles from '../styles/Home.module.css'
 
 export default function Home() {
   const { connectionStatus, account } = useWallet()
   const [amount, setAmount] = useState<number>(0)
   const [balance, setBalance] = useState<number>(0)
+  const [isCopied, setIsCopied] = useState(false) // To track the copied state
 
+  // Fetch balance whenever account changes
   useEffect(() => {
     if (account) {
       fetchBalance(account.address)
@@ -30,46 +30,63 @@ export default function Home() {
     setAmount(parseFloat(e.target.value))
   }
 
-  // Generate a copiable payment link (includes both address and amount)
+  // Generate payment URI
   const paymentURI = account && account.address && amount > 0
-    ? `http://localhost:5173/payment?address=${account.address}&amount=${amount}` // Dev link for local development
-    // : `https://your-domain.com/payment?address=${account.address}&amount=${amount}` // Uncomment this for production
-    : '';
+    ? `http://localhost:5173/payment?address=${account.address}&amount=${amount}`
+    : ''
+
+  // Copy to clipboard function
+  const copyToClipboard = async () => {
+    if (paymentURI) {
+      try {
+        await navigator.clipboard.writeText(paymentURI)
+        setIsCopied(true) // Show copied message
+        setTimeout(() => setIsCopied(false), 2000) // Hide after 2 seconds
+      } catch (error) {
+        console.error('Failed to copy text:', error)
+      }
+    }
+  }
 
   return (
     <div className={styles.container}>
       <AlephiumConnectButton />
 
       {connectionStatus === 'connected' && (
-        <>
-          <TokenDapp config={tokenFaucetConfig} />
-
-          <div>
-            <h2>Demande de Paiement</h2>
-            <p>Adresse : {account.address}</p>
-            <p>Solde : {balance} ALPH</p>
+        <div className={styles.main}>
+          <div className={styles.paymentSection}>
+            <h2 className={styles.header}>Payment Request</h2>
+            <p className={styles.address}>Adress : {account.address}</p>
+            <p className={styles.balance}>Balance : {balance} ALPH</p>
             <input
               type="number"
               value={amount}
               onChange={handleAmountChange}
               placeholder="Montant en ALPH"
+              className={styles.amountInput}
             />
             {paymentURI && (
-              <div>
-                <p>Utilisez ce lien pour effectuer le paiement :</p>
+              <div className={styles.paymentLink}>
+                <p className={styles.linkDescription}>Use the link to proceed with the payment :</p>
                 <input
                   type="text"
                   value={paymentURI}
                   readOnly
-                  style={{ width: '100%', padding: '10px', fontSize: '16px' }}
+                  className={styles.paymentInput}
                 />
-                <p>
-                  <a href={paymentURI} target="_blank" rel="noopener noreferrer">Ouvrir le lien</a>
-                </p>
+                <div className={styles.copyContainer}>
+                  <button onClick={copyToClipboard} className={styles.copyButton}>
+                    <i className="fas fa-clipboard"></i> {/* Clipboard Icon */}
+                  </button>
+                  {isCopied && <span className={styles.copiedNotification}>Copied!</span>}
+                </div>
+                <a href={paymentURI} target="_blank" rel="noopener noreferrer" className={styles.paymentButton}>
+                  Open the link
+                </a>
               </div>
             )}
           </div>
-        </>
+        </div>
       )}
     </div>
   )
