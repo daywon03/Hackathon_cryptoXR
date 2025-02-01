@@ -1,30 +1,13 @@
 import { useState, useEffect } from 'react'
 import { AlephiumConnectButton, useWallet } from '@alephium/web3-react'
 import { getAddressBalance } from '../services/alephiumService'
-import { tokenFaucetConfig } from '../services/utils'
+// import { tokenFaucetConfig } from '../services/utils'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
   const { connectionStatus, account } = useWallet()
   const [amount, setAmount] = useState<number>(0)
-  const [balance, setBalance] = useState<number>(0)
   const [copyButtonText, setCopyButtonText] = useState<string>('Copy') // State for the button text
-
-  // Fetch balance whenever account changes
-  useEffect(() => {
-    if (account) {
-      fetchBalance(account.address)
-    }
-  }, [account])
-
-  const fetchBalance = async (address: string) => {
-    try {
-      const balanceData = await getAddressBalance(address)
-      setBalance(balanceData.balance) // Assuming response contains 'balance'
-    } catch (error) {
-      console.error('Error fetching balance:', error)
-    }
-  }
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(parseFloat(e.target.value))
@@ -53,21 +36,21 @@ export default function Home() {
       <AlephiumConnectButton />
 
       {connectionStatus === 'connected' && (
+
         <div className={styles.main}>
           <div className={styles.paymentSection}>
-            <h2 className={styles.header}>Demande de Paiement</h2>
-            <p className={styles.address}>Adresse : {account.address}</p>
-            <p className={styles.balance}>Solde : {balance} ALPH</p>
+            <h2 className={styles.header}>Payment Request</h2>
+            <p className={styles.address}>Address: {account.address}</p>
             <input
               type="number"
               value={amount}
               onChange={handleAmountChange}
-              placeholder="Montant en ALPH"
+              placeholder="Amount in ALPH"
               className={styles.amountInput}
             />
             {paymentURI && (
               <div className={styles.paymentLink}>
-                <p className={styles.linkDescription}>Utilisez ce lien pour effectuer le paiement :</p>
+                <p className={styles.linkDescription}>Use this link to make the payment:</p>
                 <input
                   type="text"
                   value={paymentURI}
@@ -80,7 +63,7 @@ export default function Home() {
                   </button>
                 </div>
                 <a href={paymentURI} target="_blank" rel="noopener noreferrer" className={styles.paymentButton}>
-                  Ouvrir le lien
+                  Open Link
                 </a>
               </div>
             )}
