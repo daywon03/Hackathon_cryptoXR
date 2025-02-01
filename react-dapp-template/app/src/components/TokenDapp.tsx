@@ -48,7 +48,7 @@ export const TokenDapp: FC<{
             <table>
               <thead>
                 <tr>
-                  <td>id</td>
+                  <td>id bv</td>
                   <th>group</th>
                 </tr>
               </thead>
