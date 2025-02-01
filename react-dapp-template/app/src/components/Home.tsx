@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AlephiumConnectButton, useWallet } from '@alephium/web3-react'
 import { getAddressBalance } from '../services/alephiumService'
 import { tokenFaucetConfig } from '../services/utils'
@@ -8,7 +8,7 @@ export default function Home() {
   const { connectionStatus, account } = useWallet()
   const [amount, setAmount] = useState<number>(0)
   const [balance, setBalance] = useState<number>(0)
-  const [isCopied, setIsCopied] = useState(false) // To track the copied state
+  const [copyButtonText, setCopyButtonText] = useState<string>('Copy') // State for the button text
 
   // Fetch balance whenever account changes
   useEffect(() => {
@@ -40,8 +40,8 @@ export default function Home() {
     if (paymentURI) {
       try {
         await navigator.clipboard.writeText(paymentURI)
-        setIsCopied(true) // Show copied message
-        setTimeout(() => setIsCopied(false), 2000) // Hide after 2 seconds
+        setCopyButtonText('Copied!') // Change the button text to "Copied!"
+        setTimeout(() => setCopyButtonText('Copy'), 2000) // Revert back to "Copy" after 2 seconds
       } catch (error) {
         console.error('Failed to copy text:', error)
       }
@@ -55,9 +55,9 @@ export default function Home() {
       {connectionStatus === 'connected' && (
         <div className={styles.main}>
           <div className={styles.paymentSection}>
-            <h2 className={styles.header}>Payment Request</h2>
-            <p className={styles.address}>Adress : {account.address}</p>
-            <p className={styles.balance}>Balance : {balance} ALPH</p>
+            <h2 className={styles.header}>Demande de Paiement</h2>
+            <p className={styles.address}>Adresse : {account.address}</p>
+            <p className={styles.balance}>Solde : {balance} ALPH</p>
             <input
               type="number"
               value={amount}
@@ -67,7 +67,7 @@ export default function Home() {
             />
             {paymentURI && (
               <div className={styles.paymentLink}>
-                <p className={styles.linkDescription}>Use the link to proceed with the payment :</p>
+                <p className={styles.linkDescription}>Utilisez ce lien pour effectuer le paiement :</p>
                 <input
                   type="text"
                   value={paymentURI}
@@ -76,12 +76,11 @@ export default function Home() {
                 />
                 <div className={styles.copyContainer}>
                   <button onClick={copyToClipboard} className={styles.copyButton}>
-                    <i className="fas fa-clipboard"></i> {/* Clipboard Icon */}
+                    {copyButtonText} {/* Display "Copy" or "Copied!" based on state */}
                   </button>
-                  {isCopied && <span className={styles.copiedNotification}>Copied!</span>}
                 </div>
                 <a href={paymentURI} target="_blank" rel="noopener noreferrer" className={styles.paymentButton}>
-                  Open the link
+                  Ouvrir le lien
                 </a>
               </div>
             )}
